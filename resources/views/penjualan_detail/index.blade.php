@@ -33,10 +33,11 @@
 
 @section('breadcrumb')
     @parent
-    <li class="active">Transaksi Penjaualn</li>
+    <li class="active">Transaksi Penjualan</li>
 @endsection
 
 @section('content')
+<div id="notif"></div>
 <div class="row">
     <div class="col-lg-12">
         <div class="box">
@@ -146,6 +147,7 @@
 @endsection
 
 @push('scripts')
+<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 <script>
     let table, table2;
 
@@ -231,8 +233,47 @@
             $(this).select();
         });
 
-        $('.btn-simpan').on('click', function () {
-            $('.form-penjualan').submit();
+        $('.btn-simpan').on('click', function (e) {
+            e.preventDefault();
+
+            // mendapatkan request form
+            var formData = $('.form-penjualan').serialize();
+
+            $.ajax({
+                url: '/payment/get/token', // URL untuk AJAX request
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.status == 'success') { // Jika respons sukses
+                        // Lakukan pembayaran menggunakan Snap
+                        window.snap.pay(response.token, {
+                            onSuccess : function (res){
+                                alert("Pembayaran Berhasil!");
+                                $('.form-penjualan').submit();
+                            },
+                            onPending : function (res){
+                                alert("Pembayaran Pending!");
+                                console.log(result);
+                            },
+                            onError : function (res){
+                                alert("Pembayaran Gagal!");
+                                console.log(result);
+                            },
+                            onClose : function (){
+                                alert('Anda menutup modal sebelum menyelesaikan pembayaran');
+                            }
+                        });
+                    } else {
+                        // Tangani kesalahan atau respons gagal di sini
+                        alert('Terjadi kesalahan, silakan coba lagi.');
+                    }
+                },
+                error: function() {
+                    // Tangani kesalahan AJAX di sini
+                    alert('Terjadi kesalahan, silakan coba lagi.');
+                }
+            });
+            console.log('berhasil');
         });
     });
 
@@ -319,5 +360,6 @@
                 return;
             })
     }
+
 </script>
 @endpush

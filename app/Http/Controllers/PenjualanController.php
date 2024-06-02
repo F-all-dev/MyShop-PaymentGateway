@@ -7,6 +7,7 @@ use App\Models\PenjualanDetail;
 use App\Models\Produk;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use App\Helpers\MidtransApiHelpers;
 use PDF;
 
 class PenjualanController extends Controller
@@ -93,6 +94,8 @@ class PenjualanController extends Controller
             $produk->stok -= $item->jumlah;
             $produk->update();
         }
+        // menghhapus session penjualaan sebelumnya setelah berhasil disimpan
+        session()->forget('id_penjualan');
 
         return redirect()->route('transaksi.selesai');
     }

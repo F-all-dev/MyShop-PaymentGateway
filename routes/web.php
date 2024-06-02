@@ -14,6 +14,7 @@ use App\Http\Controllers\{
     SettingController,
     SupplierController,
     UserController,
+    PaymentController,
 };
 use Illuminate\Support\Facades\Route;
 
@@ -106,4 +107,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/profil', [UserController::class, 'profil'])->name('user.profil');
         Route::post('/profil', [UserController::class, 'updateProfil'])->name('user.update_profil');
     });
+
+
+    // API Payment From Midtrans
+    Route::post('payment/get/token', [PaymentController::class, 'getToken'])->name('payment.getToken');
 });
