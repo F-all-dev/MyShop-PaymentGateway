@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pembelian;
-use App\Models\Pengeluaran;
 use App\Models\Penjualan;
+use App\Models\Pengeluaran;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use PDF;
 use  Maatwebsite\Excel\Facades\Excel;
 
 class LaporanController extends Controller
@@ -76,15 +76,12 @@ class LaporanController extends Controller
 
     public function exportPDF($awal, $akhir)
     {
-     //   $data = $this->getData($awal, $akhir);
-       // $pdf = PDF::loadView('laporan.pdf');
-        //$pdf->setPaper('A4', 'portrait');
-        //$pdf->output();
+        $data = $this->getData($awal, $akhir);
 
-         //return $pdf->stream('test.pdf');
-         $pdf  = PDF::loadView('laporan.pdf', compact('awal', 'akhir', 'data'));
-         $pdf->setPaper('a4', 'potrait');
+        $pdf  = Pdf::loadView('laporan.pdf', compact('awal', 'akhir', 'data'));
+        $pdf->setPaper('a4', 'potrait');
+
         
-         return $pdf->stream('Laporan-pendapatan-'. date('Y-m-d-his') .'.pdf');
+        return $pdf->stream('Laporan-pendapatan-'. date('Y-m-d-his') .'.pdf');
     }
 }
