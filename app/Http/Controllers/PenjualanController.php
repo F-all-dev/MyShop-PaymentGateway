@@ -95,7 +95,6 @@ class PenjualanController extends Controller
             $produk->update();
         }
         // menghhapus session penjualaan sebelumnya setelah berhasil disimpan
-        session()->forget('id_penjualan');
 
         return redirect()->route('transaksi.selesai');
     }
